@@ -1,0 +1,30 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
+Heart Failure Explorations in R
+
+First few code chunks are a linear model analysis. In conducting a regression analysis, I perform an initial summary and analysis, do variable selection with AIC, run diagnostics to consider whether any data transformations are necessary, and then interpret the model given the data.
+
+After a linear model analysis, we look towards other methods to understand the dataset further.
+
+Dataset comes from Kaggle: https://www.kaggle.com/andrewmvd/heart-failure-clinical-data
+
+```{r}
+
+h_fail <- read.csv("datasets_727551_1263738_heart_failure_clinical_records_dataset.csv")
+
+lmod <- lm(DEATH_EVENT ~ ., h_fail) ## Full variable model
+summary(lmod)
+
+```
+
+From the summary alone on the full model, we observe that some variables are more significant than others. To account for this, we can instead do variable selection to find the optimal model. Rather than traditional backward elimination, we use the AIC (Akaike information criterion) to find the best model.
+
+```{r}
+mod1 <- step(lmod)
+summary(mod1)
+```
+
+After variable selection, we see the best predictors for the response are age, creatinine_phosphokinase, ejection_fraction, serum_creatinine, serum_sodium, sex, and time. From the summary, we note that there are still variables that are insignificant at the 0.1 level. Under traditional backward selection, we would remove those variables and have an even \textit{smaller} model. Instead, we can trust variable selection with minimal AIC as it is often a good estimator for the test error of the model. More info on the AIC criterion can be found in Hastie, Tibshirani, Friedman's \textit{Elements of Statistical Learning} Section 7.5.
